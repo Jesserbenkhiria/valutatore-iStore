@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model shopify_sessions {
+  id               String  @id @db.VarChar(255)
+  shop             String  @db.VarChar(255)
+  state            String  @db.VarChar(255)
+  isOnline         Int     @db.TinyInt
+  scope            String? @db.VarChar(1024)
+  expires          Int?
+  onlineAccessInfo String? @db.VarChar(255)
+  accessToken      String? @db.VarChar(255)
+}
+
+model shopify_sessions_migrations {
+  migration_name String @id @db.VarChar(255)
+}
+
+model valutazioni {
+  id              Int              @id @default(autoincrement())
+  ritirato        Int              @default(0)
+  confermato      Int              @default(0)
+  content         Json
+  createdAt       DateTime         @default(now())
+  valutato        Boolean          @default(false)
+  idOrdineShopify String?          @db.VarChar(255)
+  imeiConfermato  Boolean?
+  checkedIMEIs    checkedIMEI[]    @relation("ValutazioniCheckedIMEIs")
+}
+
+model valutazioneLogs {
+  id              Int      @id @default(autoincrement())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  stepId          Int
+  step            steps    @relation(fields: [stepId], references: [id])
+}
+
+model steps {
+  id              Int              @id @default(autoincrement())
+  descrizione     String?          @db.VarChar(255)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  valutazioneLogs valutazioneLogs[]
+}
+
+model checkedIMEI {
+  id              Int              @id @default(autoincrement())
+  imei            String           @unique
+  balance         Float
+  price           Float
+  service         String
+  status          String
+  manufacturer    String
+  modelCode       String
+  modelName       String
+  valutazioniId   Int
+  valutazioni     valutazioni      @relation(fields: [valutazioniId], references: [id], name: "ValutazioniCheckedIMEIs")
+}

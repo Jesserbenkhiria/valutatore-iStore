@@ -1,0 +1,253 @@
+h1 {
+  font-size: 18px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+select,
+input[type="text"],
+input[type="email"],
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+input[type="submit"] {
+  background-color: #000;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+input[type="submit"]:hover {
+  background-color: #333;
+}
+
+.wrapper{
+  margin-bottom: 1%;
+}
+
+.wrapper .search-input{
+  background: #fff;
+  width: 100%;
+  border-radius: 5px 5px 0 0;
+  position: relative;
+  box-shadow: 0px 1px 5px 3px rgba(0,0,0,0.12);
+}
+
+.search-input input {
+  height: 55px;
+  width: 100%;
+  outline: none;
+  border: none;
+  border-radius: 5px 5px 0 0;
+  padding: 0 60px 0 20px;
+  font-size: 18px;
+  box-shadow: 0px 5px 12px rgba(0,0,0,0.1);
+  box-sizing: border-box;
+}
+
+
+.search-input.active input{
+  border-radius: 5px 5px 0 0;
+}
+
+.search-input .autocom-box{
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.search-input.active .autocom-box{
+  padding: 10px 8px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.autocom-box li{
+  list-style: none;
+  padding: 8px 12px;
+  display: none;
+  width: 100%;
+  cursor: default;
+  border-radius: 3px;
+  font-size: 15px;
+}
+
+.search-input.active .autocom-box li{
+  display: block;
+}
+.autocom-box li:hover{
+  background: #efefef;
+}
+
+.search-input .icon{
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  height: 40px;
+  width: 40px;
+  margin: 0 1%;
+  text-align: center;
+  line-height: 55px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.product-card {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  border-radius: 5px;
+  max-width: 450px;
+  margin: 0 auto;
+}
+/* commentato da davide
+.product-image {
+  width: 350px;
+  height: 584px;
+  margin-bottom: 10px;
+}
+*/
+.product-details {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.product-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.product-description {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.product-price {
+  font-size: 16px;
+  text-align: center;
+  font-weight: bold;
+  color: black;
+  
+}
+
+/* aggiunto da davide, nel codice successivo è stato commentato la .product-image generale e il codice height: 150px; successivo */
+
+
+
+@media (max-width: 499px) {
+  .product-image {
+    height: 300px;
+    margin-bottom: 0;
+  }
+}
+
+@media (min-width: 500px){
+  .product-image {
+    margin-bottom: 0;
+  }
+}
+@media (min-width: 992px){
+  .wrapper .search-input{
+    width: 75%;
+  }
+}
+
+
+
+
+/* Style inputs */
+.valutatore input[type=text], select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  resize: vertical;
+}
+
+.valutatore input[type=submit] {
+  background-color: #000000;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.valutatore input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+/* Style the container/contact section */
+.container_principale {
+  border-radius: 5px;
+  background-color: #ffffff;
+  padding: 10px;
+}
+
+.accessory-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.accessory-icon {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 10px;
+}
+
+.accessory-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  
+}
+
+.accessory-description {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+.cliccato{
+  background-color: #1d1d1d;
+  border-color: #8345fe;
+  border-width: 0.2em;
+  color: #FFFFFF;
+}
+
+
+.errore_chiamata {
+  display: none; /* Nascondi di default */
+  text-align: center; /* Allinea il testo al centro */
+  font-size: 1.5rem; /* Imposta la dimensione del testo a 1.5rem (corrisponde a circa 24px) */
+  margin-top: 20px; /* Aggiungi un margine superiore di 20px per spaziare il div dal resto del contenuto */
+}

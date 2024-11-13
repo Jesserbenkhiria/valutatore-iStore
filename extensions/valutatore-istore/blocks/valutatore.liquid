@@ -1,0 +1,150 @@
+{{ 'style.css' | asset_url | stylesheet_tag }}
+{{ 'bootstrap.css' | asset_url | stylesheet_tag }}
+{{ 'ion.rangeSlider.min.css' | asset_url | stylesheet_tag }}
+
+<div class="container_principale">
+    <div class = "prima_schermata">
+      <div class="wrapper">
+        <div class="search-input mx-auto">
+          <a href="" target="_blank" hidden></a>
+          <input type="text" placeholder="Inserisci nome modello..">
+          <div class="autocom-box">
+            <!-- here list are inserted from javascript -->
+          </div>
+          <div class="icon mt-3">
+            <svg style="color: rgb(111, 111, 111);" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"> <path fill="#6f6f6f" d="M479.6,399.716l-81.084-81.084-62.368-25.767A175.014,175.014,0,0,0,368,192c0-97.047-78.953-176-176-176S16,94.953,16,192,94.953,368,192,368a175.034,175.034,0,0,0,101.619-32.377l25.7,62.2L400.4,478.911a56,56,0,1,0,79.2-79.195ZM48,192c0-79.4,64.6-144,144-144s144,64.6,144,144S271.4,336,192,336,48,271.4,48,192ZM456.971,456.284a24.028,24.028,0,0,1-33.942,0l-76.572-76.572-23.894-57.835L380.4,345.771l76.573,76.572A24.028,24.028,0,0,1,456.971,456.284Z" class="ci-primary"></path> </svg></div>
+        </div>
+      </div>
+      <div class="row valutatore" style="display:none;">
+        <div class="d-flex contatta_valuta_piccolo flex-column mx-auto mb-4">
+          <button type="button" class="mx-auto btn-block btn-secondary mt-1 mb-3 btn-lg btn-dark fw-semibold text-wrap w-auto shadow-sm" onclick="mostraBarra();">Valuta un altro dispositivo!</button>
+      <!--  <button type="button" class="mx-auto btn-block btn-secondary mt-1 mb-1 btn-lg btn-success  fw-bold" onclick="window.location.href='https://api.whatsapp.com/send?phone=393317359139&text=Ciao%20iStore,%20avrei%20bisogno%20di%20qualche%20informazione%E2%80%A6';"> Contattaci Su Whatsapp   </button>
+           -->
+           </div>
+        <div class="col-lg-6 col-md-12">
+          <div class="col-12 row mx-auto product-card">
+            <img class="col-md-12 col-lg-6 mx-auto product-image" src="" alt="Phone Image" loading="lazy" width="" height="" >
+            <div class="col-md-12 col-lg-6 mx-auto text-center product-details">
+              <div class="product-title mb-3"></div>
+              <div class="product-description mb-3">Stima riferita a prodotto completo, in ottimo stato e libero da vincoli</div>
+              <div class="product-price display-3 fw-bold"></div>
+            </div>
+          </div> 
+          <div class = "col-12 mt-3">
+            <div class = "ranges">
+              <h3 style="text-align : center;">Stato Batteria</h3>
+              <input type="text" class="batteria" name="my_range" value="" />
+              <br>
+              <h3 style="text-align : center;">Stato Estetico</h3>
+              <input type="text" class="stato_estetico" name="my_range" value="" />
+              <br>
+              <h3 style="text-align : center;">Condizione del display</h3>
+              <input type="text" class="schermo" name="my_range" value="" />
+            </div>
+            <div class="container mt-3 mb-3">
+              <div class="row">
+                <h3 style="text-align : center;" class="col-md-12">Accessori</h3>
+                <div class="col-md-6">
+                  <div class="accessory-card cliccato scatola" onclick="colorCard(this)">
+                    <img class="accessory-icon" src="{{ 'box.png' | asset_url }}"width="" height="" loading="lazy"  viewBox="0 0 24 24">
+                    <h2 class="accessory-title">Scatola</h2>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="accessory-card cliccato cavo" onclick="colorCard(this)">
+                    <img class="accessory-icon" src="{{ 'usb.png' | asset_url }}" width="" height="" loading="lazy" viewBox="0 0 24 24">
+                    <h2 class="accessory-title">Cavo Dati</h2>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="accessory-card cliccato caricatore" onclick="colorCard(this)">
+                    <img class="accessory-icon" src="{{ 'charger.png' | asset_url }}"width="" height="" loading="lazy"  viewBox="0 0 24 24">
+                    <h2 class="accessory-title">Caricatore</h2>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="accessory-card cliccato scontrino" onclick="colorCard(this)">
+                    <img class="accessory-icon" src="{{ 'invoice.png' | asset_url }}" width="" height="" loading="lazy" viewBox="0 0 24 24">
+                    <h2 class="accessory-title">Prova Di acquisto</h2>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-12">
+          <div class="d-flex contatta_valuta_grande flex-column mx-auto">
+             <button type="button" class="mx-auto btn-block btn-secondary mt-1 mb-3 btn-lg btn-dark fw-semibold text-wrap w-auto shadow-sm" onclick="mostraBarra();">Valuta un altro dispositivo!</button>
+         <!-- <button type="button" class="mx-auto btn-block btn-secondary mt-1 mb-1 btn-lg btn-success  fw-bold" onclick="window.location.href='https://api.whatsapp.com/send?phone=393317359139&text=Ciao%20iStore,%20avrei%20bisogno%20di%20qualche%20informazione%E2%80%A6';"> Contattaci Su Whatsapp   </button>
+           -->
+          
+        </div>
+          <div class="inputs">
+            <form>
+              <div class="modello_imei row">
+                <div class= "col-6">
+                  <label for="modello">Modello</label>
+                  <input type="text" id="modello" disabled>  
+                </div>
+                <div class= "col-12">
+                  <label for="imei">Imei / Serial Number</label>
+                  <input type="text" id="imeitelefono" name="imei" placeholder="Chiamare il *#06# per conoscere l'imei" required>
+                </div>
+              </div>
+              <label for="fnameSurname">Nome e Cognome</label>
+              <input type="text" id="fnameSurname" name="firstname" placeholder="Il tuo nome e cognome.." required>
+              <label for="email">Email</label>
+              <input type="text" id="email" name="email" placeholder="La tua email.." required>
+              <label for="phone">Numero di telefono</label>
+              <input type="text" id="phone" name="phone" placeholder="Il tuo numero di telefono.." required>
+              <label for="indirizzo">Indirizzo</label>
+              <input type="text" id="indirizzo" name="indirizzo" placeholder="Indirizzo di Residenza o Ritiro (Città/Via)" required>
+              <label for="upload">Carica Foto del dispositivo*</label>
+              <div class="mt-1 custom-file">
+                <input type="file" class="custom-file-input" id="avatar" aria-describedby="inputGroupFileAddon01" required 
+                  aria-describedby="inputGroupFileAddon01" required>
+                <label class="custom-file-label" id="labelfile1" for="inputGroupFile01">Scegli Foto Fronte</label>
+              </div>
+              <div class="mt-1 mb-3 custom-file">
+                <input type="file" class="custom-file-input" id="avatar2"
+                  aria-describedby="inputGroupFileAddon01" required>
+                <label class="custom-file-label" id="labelfile2" for="inputGroupFile01">Scegli Foto Retro</label>
+                <p>*Il caricamento delle foto potrebbe durare qualche secondo in più in base al peso delle immagini</p>
+              </div>
+              <input type="submit" id="bottone" style="display : none;">
+              <div class="form-group mt-3">
+                <input type="checkbox" id="ownership" name="ownership" required>
+                <label for="ownership">Il prodotto è di mia legittima proprietà e libero da ogni obbligo e vincolo, non è legato ad alcun contratto operatore e qualora lo fosse mi impegno a riscattarlo contestualmente alla vendita</label>
+              </div>
+              
+              <div class="form-group">
+                <input type="checkbox" id="imei" name="imei" required>
+                <label for="imei">Sono a conoscenza che l'incorrere di blocchi IMEI implica responsabilità civile e penale</label>
+              </div>
+              <br>
+              <div class="form-group">
+                <input type="checkbox" id="privacy" name="privacy" required>
+                <label for="privacy">Accetto il trattamento dei dati personali come descritto nella privacy policy</label>
+              </div>
+              <input type="checkbox" id="privacy" style = "display:none;" name="privacy" required>
+            </form>
+          </div>
+        </div>
+        <button style="margin: 0 2%"type="button" class="mx-auto btn btn-secondary btn-lg btn-dark rounded-pill col-lg-4 fw-bold" onclick = "formattaBody()">Invia Richiesta</button>
+      </div>
+    </div>
+    <div class="errore_chiamata alert alert-danger" role="alert">
+      Ci scusiamo per il disagio, stiamo aggiornando le nostre valutazioni, si prega di riprovare più tardi.
+    </div>
+</div>
+
+<script src="{{ 'valutatoreistore.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Valutatore iStore Milano",
+  "templates": ["page"],
+  "target": "section",
+  "settings": []
+}
+{% endschema %}
