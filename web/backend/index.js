@@ -22,7 +22,7 @@ const STATIC_PATH =
 const app = express();
 app.use(express.json());
 
-// subscriber.verifyValutazioneSub()
+subscriber.verifyValutazioneSub()
 
 
 // Set up Shopify authentication and webhook handling

@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
-dotenv.config();
+dotenv.config()
 
 const transporter = nodemailer.createTransport({
   host: "authsmtp.securemail.pro",
@@ -15,8 +15,6 @@ const transporter = nodemailer.createTransport({
 });
 
 const valutaEmail = (content, id, include) => {
-  console.log(content, id);
-  console.log("here", content, id);
   const first = include
     ? "Abbiamo elaborato con successo la tua valutazione!"
     : "Abbiamo rettificato la tua valutazione con i valori corrispondenti al dispositivo valutato.";
@@ -80,7 +78,7 @@ const valutaEmail = (content, id, include) => {
     if (error) {
       console.error("Error sending email:", error);
     } else {
-      console.log("Email sent successfully:", info.response);
+      console.log("Email sent successfully");
     }
   });
 };

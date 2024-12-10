@@ -23,7 +23,7 @@ dist/
 
 # extensions build output
 extensions/*/build
-
+shopify.app.dev-valutatore-istore.toml
 # Node library SQLite database
 web/database.sqlite
 uploads

@@ -61,35 +61,7 @@ const ValutazioneController = {
 
         // Send the response and return to avoid further processing
         res.status(201).send(result);
-        let content = JSON.parse(result.content);
-
-        subscriber.richiestaValutazione(result.content);
-
-        // Process sending emails but do not send another response after this
-        await mailer.sendMailUtente(
-          id,
-          content.email,
-          req.body.prezzo,
-          req.files?.file?.[0]?.path, // Make sure req.files.file exists
-          req.files?.file2?.[0]?.path
-        );
-        await mailer.sendMailNegozio(
-          id,
-          content.email,
-          content.nome,
-          req.body.prezzo,
-          content.telefono,
-          content.imei,
-          content.modello,
-          content.stato_schermo,
-          content.stato_batteria,
-          content.stato_estetico,
-          content.accessori,
-          req.files?.file?.[0]?.path, // Check if files exist
-          req.files?.file2?.[0]?.path
-        );
-
-        console.log("proc finita");
+        subscriber.richiestaValutazione(result.content,id);
         await ValutazioneLogsRepository.create(
           ValutazioneLogsRepository.steps.VALUTAZIONE_RICEVUTA.id
         );
@@ -159,7 +131,7 @@ const ValutazioneController = {
         let content = JSON.parse(rows.content);
         // console.log(req.body.prezzo);
 
-        await valutaEmail(content, rows.id, true);
+       
 
         if (!rows.idOrdineShopify) {
           subscriber.confermaValutazione(rows.content);

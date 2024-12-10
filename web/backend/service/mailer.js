@@ -87,6 +87,8 @@ export const mailer = {
     path,
     path2
   ) {
+ 
+
     this.mail.html =
       "<html><head>    <style>        body {            font-family: Arial, sans-serif;            margin: 0;            padding: 0;        }        .container {            max-width: 600px;            margin: 0 auto;            padding: 20px;        }        .button {            display: inline-block;            background-color: #000000;            color: #ffffff;            padding: 10px 20px;            text-decoration: none;            border-radius: 4px;        }        .data-table {            border-collapse: collapse;            margin-top: 20px;        }        .data-table td,        .data-table th {            padding: 8px;            border: 1px solid #dddddd;        }        .data-table th {            background-color: #f9f9f9;            font-weight: bold;        }    </style></head>" +
       "<body>" +
@@ -142,15 +144,18 @@ export const mailer = {
     try {
       this.mail.to = "valutazioni@istoremilano.com";
       let transporter = await this.init();
+      console.log(this.mail.html); // Log the email body content
       await transporter.sendMail(this.mail);
+      console.log("Email sent successfully");
     } catch (error) {
-      console.log(error);
+      console.error("Error sending email: ", error);
     }
 
     // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 
     // Preview only available when sending through an Ethereal account
   },
+
   sendMailValuta: async function (
     id,
     email,
@@ -205,7 +210,7 @@ export const mailer = {
       <p>www.instagram.com/istoremilano/</p>
       <p>www.tiktok.com/@istoremilano/</p>
     `;
-  
+
     this.mail.attachments = [
       {
         filename: "foto_fronte.jpg",
@@ -217,7 +222,7 @@ export const mailer = {
       },
     ];
   },
-  
+
   init: async function () {
     let transporter = nodemailer.createTransport(this.config);
     return transporter;
