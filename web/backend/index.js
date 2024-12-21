@@ -9,10 +9,7 @@ import publicRouter from "./routes/publicRoutes.js";
 import privateRouter from "./routes/privateRoutes.js";
 import { subscriber } from "./service/klaviyo-subscribe.js";
 
-
-
-// @ts-ignore
-const PORT = parseInt(process.env.BACKEND_PORT || process.env.PORT, 10);
+const PORT = 4000;;
 
 const STATIC_PATH =
   process.env.NODE_ENV === "production"
@@ -22,7 +19,7 @@ const STATIC_PATH =
 const app = express();
 app.use(express.json());
 
-subscriber.verifyValutazioneSub()
+//subscriber.verifyValutazioneSub()
 
 
 // Set up Shopify authentication and webhook handling

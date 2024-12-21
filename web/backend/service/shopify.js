@@ -26,8 +26,18 @@ let { restResources } = await import(
 // Initialize Shopify app
 const shopify = shopifyApp({
   api: {
+    apiKey: process.env.SHOPIFY_API_KEY, // Chiave API dal file .env
+    apiSecretKey: process.env.SHOPIFY_CLIENT_SECRET, // Chiave segreta API dal file .env
+    hostName: process.env.SHOPIFY_HOST_NAME, // Nome host dal file .env
+    apiVersion: LATEST_API_VERSION,
     restResources,
-    // Adjust as per your Shopify API version requirements
+    future: {
+      customerAddressDefaultFix: true,
+      lineItemBilling: true,
+      unstable_managedPricingSupport: true,
+    },
+    billing: undefined, // Configura la fatturazione se necessario
+    scopes: process.env.SHOPIFY_SCOPES.split(","), // Converte l'array di scope dal .env in JSON
   },
   auth: {
     path: '/api/auth',

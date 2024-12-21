@@ -7,7 +7,7 @@ const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(
       null,
-      "/root/app/import-telefoni-istore/valutatore/uploads/fotodispositivi"
+      "/root/iStoreMilano/valutatore-iStore/uploads"
     );
   },
   filename: function (req, file, cb) {

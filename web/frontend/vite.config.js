@@ -1,8 +1,10 @@
 import { defineConfig } from "vite";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-import https from "https";
 import react from "@vitejs/plugin-react";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 if (
   process.env.npm_lifecycle_event === "build" &&
@@ -15,7 +17,7 @@ if (
 }
 
 const proxyOptions = {
-  target: `http://127.0.0.1:${process.env.BACKEND_PORT}`,
+  target: `http://127.0.0.1:${process.env.VITE_BACKEND_PORT}`,
   changeOrigin: false,
   secure: true,
   ws: false,
@@ -46,14 +48,14 @@ export default defineConfig({
   root: dirname(fileURLToPath(import.meta.url)),
   plugins: [react()],
   define: {
-    "process.env.SHOPIFY_API_KEY": JSON.stringify(process.env.SHOPIFY_API_KEY),
+    "process.env.SHOPIFY_API_KEY": JSON.stringify(process.env.VITE_SHOPIFY_API_KEY),
   },
   resolve: {
     preserveSymlinks: true,
   },
   server: {
     host: "0.0.0.0",
-    port: process.env.FRONTEND_PORT,
+    port: process.env.VITE_FRONTEND_PORT,
     hmr: hmrConfig,
     proxy: {
       "^/(\\?.*)?$": proxyOptions,

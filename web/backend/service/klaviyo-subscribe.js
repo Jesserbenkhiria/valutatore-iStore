@@ -218,35 +218,31 @@ export const subscriber = {
         console.log("user exist");
       }
     } catch (error) {
-      let userId = error.response.data.errors[0].meta.duplicate_profile_id;
-      const added = await this.addProfileToList(listaID, userId);
-      if (added) {
-        console.log("emaailsssssss will be sent", listaID);
-        await mailer.sendMailUtente(
-          id,
-          parsedBody.email,
-          parsedBody.prezzo,
-          parsedBody.urlImg,
-          parsedBody.urlImg
-        );
-        console.log("emaailsss will be sent second", listaID);
-        await mailer.sendMailNegozio(
-          id,
-          parsedBody.email,
-          parsedBody.nome,
-          parsedBody.prezzo,
-          parsedBody.telefono,
-          parsedBody.imei,
-          parsedBody.modello,
-          parsedBody.stato_schermo,
-          parsedBody.stato_batteria,
-          parsedBody.stato_estetico,
-          parsedBody.accessori,
-          parsedBody.urlImg,
-          parsedBody.urlImg
-        );
-        console.log("emaail will be sent", listaID);
-      }
+      console.log("emaailsssssss will be sent", listaID);
+      await mailer.sendMailUtente(
+        id,
+        parsedBody.email,
+        parsedBody.prezzo,
+        parsedBody.urlImg,
+        parsedBody.urlImg
+      );
+      console.log("emaailsss will be sent second", listaID);
+      await mailer.sendMailNegozio(
+        id,
+        parsedBody.email,
+        parsedBody.nome,
+        parsedBody.prezzo,
+        parsedBody.telefono,
+        parsedBody.imei,
+        parsedBody.modello,
+        parsedBody.stato_schermo,
+        parsedBody.stato_batteria,
+        parsedBody.stato_estetico,
+        parsedBody.accessori,
+        parsedBody.urlImg,
+        parsedBody.urlImg
+      ); 
+      console.log("emaail will be sent", listaID);
     }
   },
   verifyValutazioneSub: async function () {
