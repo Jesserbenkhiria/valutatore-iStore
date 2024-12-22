@@ -9,7 +9,7 @@ dotenv.config();
 if (
   process.env.npm_lifecycle_event === "build" &&
   !process.env.CI &&
-  !process.env.SHOPIFY_API_KEY
+  !process.env.VITE_SHOPIFY_API_KEY
 ) {
   console.warn(
     "\nBuilding the frontend app without an API key. The frontend build will not run without an API key. Set the SHOPIFY_API_KEY environment variable when running the build command.\n"
@@ -39,7 +39,7 @@ if (host === "localhost") {
   hmrConfig = {
     protocol: "wss",
     host: host,
-    port: process.env.FRONTEND_PORT,
+    port: process.env.VITE_FRONTEND_PORT,
     clientPort: 443,
   };
 }
