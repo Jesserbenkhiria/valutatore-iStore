@@ -9,6 +9,7 @@ export const orderCreator = async function (valutazione, session) {
       return;
     }
     console.log("Inizio");
+console.log("heeeeeeeeere",valutazione);
 
     // Parsing valutazione content
     const valutazioneData = JSON.parse(valutazione.content);
@@ -63,7 +64,7 @@ export const orderCreator = async function (valutazione, session) {
     if (!product) {
       // Create new product if it doesn't exist
       product = new shopify.api.rest.Product({ session });
-      product.title = `${valutazioneData.modello} - ${valutazioneData.nome}`;
+      product.title = `${valutazioneData.modello} - ${valutazioneData.nome} - ${valutazioneData.prezzo}`;
       product.body_html = `
         <strong>Modello:</strong> ${valutazioneData.modello}<br>
         <strong>Accessori:</strong> ${valutazioneData.accessori}<br>
@@ -76,7 +77,7 @@ export const orderCreator = async function (valutazione, session) {
       product.product_type = "Usato";
       product.tags = "valutazione";
       product.status = "archived";
-    
+      product.price = valutazioneData.prezzo
       product.images = valutazioneData.urlImg ? [{ src: valutazioneData.urlImg }] : [];
 
       await product.save({
@@ -85,7 +86,7 @@ export const orderCreator = async function (valutazione, session) {
 
     } else {
       // Update existing product
-      product.title = `${valutazioneData.modello} - ${valutazioneData.nome}`;
+      product.title = `${valutazioneData.modello} - ${valutazioneData.nome} - ${valutazioneData.prezzo}`;
       product.body_html = `
         <strong>Modello:</strong> ${valutazioneData.modello}<br>
         <strong>Accessori:</strong> ${valutazioneData.accessori}<br>

@@ -54,17 +54,43 @@ const ValutazioneController = {
     },
     saveValutazione: async function (req, res) {
       try {
+        console.log("fiiiiired");
+        console.log("Received files:", req.files);
+        console.log("Request body:", req.body);
+        
         const id = await ValutazioneRepository.create(
           ValutazioneRepository.parse(req)
         );
         let result = await ValutazioneRepository.read(id);
-
-        // Send the response and return to avoid further processing
         res.status(201).send(result);
-        subscriber.richiestaValutazione(result.content,id);
+        let content = JSON.parse(result.content);
+        subscriber.richiestaValutazione(result.content);
+        await mailer.sendMailUtente(
+          id,
+          content.email,
+          req.body.prezzo,
+          req.files.file[0].path,
+          req.files.file2[0].path
+        );
+        await mailer.sendMailNegozio(
+          id,
+          content.email,
+          content.name,
+          req.body.prezzo,
+          content.telefono,
+          content.imei,
+          content.modello,
+          content.stato_schermo,
+          content.stato_batteria,
+          content.stato_estetico,
+          content.accessori,
+          req.files.file[0].path,
+          req.files.file2[0].path
+        );
         await ValutazioneLogsRepository.create(
           ValutazioneLogsRepository.steps.VALUTAZIONE_RICEVUTA.id
         );
+        console.log("proc finita");
       } catch (error) {
         console.log(error);
         res.status(500).send(error.message); // Send error response
@@ -122,6 +148,7 @@ const ValutazioneController = {
         rows = await ValutazioneRepository.read(req.params.id);
         rows = await ValutazioneRepository.valuta(req.params.id, rows.valutato);
         await orderCreator(rows, res.locals.shopify.session);
+console.log("fired");
 
         // let content = JSON.parse(rows.content);
         // console.log(content);
@@ -132,11 +159,11 @@ const ValutazioneController = {
         // console.log(req.body.prezzo);
 
        
+        console.log("content", content);
 
         if (!rows.idOrdineShopify) {
           subscriber.confermaValutazione(rows.content);
         }
-        console.log("content", content);
       } catch (e) {
         console.log(`Failed to create valutation order ${e.message}`);
         status = 500;
@@ -243,6 +270,7 @@ const ValutazioneController = {
     },
 
     checkImei: async function (req, res) {
+      console.log("checkImei fired");
       const { imei, id } = req.body;
       const API_URL = "https://sickw.com/api.php";
       const API_KEY = "FAO-T6C-AZM-T6E-45G-KVO-WMS-IZG";
@@ -256,6 +284,7 @@ const ValutazioneController = {
           const response = await axios.get(
             `${API_URL}?format=beta&key=${API_KEY}&imei=${imei}&service=demo`
           );
+          console.log("response", response.data);
           if (response.data.status === "success") {
             const mergedResponse = {
               ...response.data,
@@ -281,6 +310,7 @@ const ValutazioneController = {
             return res.json({ found: false, data: {} });
           }
         } catch (error) {
+          console.log(error);
           res.status(500).json({ error: error.message });
         }
       }

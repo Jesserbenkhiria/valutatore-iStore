@@ -189,59 +189,59 @@ export const subscriber = {
         if (added) {
           console.log("emaailsssssss will be sent", listaID);
 
-          await mailer.sendMailUtente(
-            id,
-            parsedBody.email,
-            parsedBody.prezzo,
-            parsedBody.urlImg,
-            parsedBody.urlImg
-          );
+          // await mailer.sendMailUtente(
+          //   id,
+          //   parsedBody.email,
+          //   parsedBody.prezzo,
+          //   parsedBody.urlImg,
+          //   parsedBody.urlImg
+          // );
           console.log("emaailsssssss will be sent second", listaID);
 
-          await mailer.sendMailNegozio(
-            id,
-            parsedBody.email,
-            parsedBody.nome,
-            parsedBody.prezzo,
-            parsedBody.telefono,
-            parsedBody.imei,
-            parsedBody.modello,
-            parsedBody.stato_schermo,
-            parsedBody.stato_batteria,
-            parsedBody.stato_estetico,
-            parsedBody.accessori,
-            parsedBody.urlImg,
-            parsedBody.urlImg
-          );
+          // await mailer.sendMailNegozio(
+          //   id,
+          //   parsedBody.email,
+          //   parsedBody.nome,
+          //   parsedBody.prezzo,
+          //   parsedBody.telefono,
+          //   parsedBody.imei,
+          //   parsedBody.modello,
+          //   parsedBody.stato_schermo,
+          //   parsedBody.stato_batteria,
+          //   parsedBody.stato_estetico,
+          //   parsedBody.accessori,
+          //   parsedBody.urlImg,
+          //   parsedBody.urlImg
+          // );
         }
       } else {
         console.log("user exist");
       }
     } catch (error) {
       console.log("emaailsssssss will be sent", listaID);
-      await mailer.sendMailUtente(
-        id,
-        parsedBody.email,
-        parsedBody.prezzo,
-        parsedBody.urlImg,
-        parsedBody.urlImg
-      );
+      // await mailer.sendMailUtente(
+      //   id,
+      //   parsedBody.email,
+      //   parsedBody.prezzo,
+      //   parsedBody.urlImg,
+      //   parsedBody.urlImg
+      // );
       console.log("emaailsss will be sent second", listaID);
-      await mailer.sendMailNegozio(
-        id,
-        parsedBody.email,
-        parsedBody.nome,
-        parsedBody.prezzo,
-        parsedBody.telefono,
-        parsedBody.imei,
-        parsedBody.modello,
-        parsedBody.stato_schermo,
-        parsedBody.stato_batteria,
-        parsedBody.stato_estetico,
-        parsedBody.accessori,
-        parsedBody.urlImg,
-        parsedBody.urlImg
-      ); 
+      // await mailer.sendMailNegozio(
+      //   id,
+      //   parsedBody.email,
+      //   parsedBody.nome,
+      //   parsedBody.prezzo,
+      //   parsedBody.telefono,
+      //   parsedBody.imei,
+      //   parsedBody.modello,
+      //   parsedBody.stato_schermo,
+      //   parsedBody.stato_batteria,
+      //   parsedBody.stato_estetico,
+      //   parsedBody.accessori,
+      //   parsedBody.urlImg,
+      //   parsedBody.urlImg
+      // ); 
       console.log("emaail will be sent", listaID);
     }
   },

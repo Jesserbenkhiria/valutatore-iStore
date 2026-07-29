@@ -7,7 +7,7 @@ const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(
       null,
-      "/root/iStoreMilano/valutatore-iStore/uploads"
+      "/root/valutatore-iStore/uploads"
     );
   },
   filename: function (req, file, cb) {
@@ -15,11 +15,24 @@ const storage = multer.diskStorage({
   },
 });
 
+// Limit file size to 2MB per file
 const limits = {
-  fileSize: 15728640 * 4,
+  fileSize: 2 * 1024 * 1024, // 2MB in bytes
+  files: 2, // Maximum 2 files
 };
 
-const upload = multer({ storage: storage, limits: limits });
+const upload = multer({ 
+  storage: storage, 
+  limits: limits,
+  fileFilter: function (req, file, cb) {
+    // Check file type
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed!'), false);
+    }
+  }
+});
 
 const publicRouter = express.Router();
 
@@ -37,6 +50,28 @@ publicRouter.post(
     { name: "file", maxCount: 1 },
     { name: "file2", maxCount: 1 },
   ]),
+  async (req, res, next) => {
+    try {
+      console.log("Files received:", req.files);
+      
+      // Check if both files are present
+      if (!req.files || !req.files.file || !req.files.file2) {
+        return res.status(400).json({ 
+          error: "Both front and back images are required" 
+        });
+      }
+      
+      next();
+    } catch (err) {
+      console.error("Multer error:", err);
+      if (err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(413).json({ 
+          error: "File size too large. Maximum size is 2MB per image." 
+        });
+      }
+      return res.status(400).json({ error: err.message });
+    }
+  },
   ValutazioneController.publicController.saveValutazione
 );
 

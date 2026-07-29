@@ -1,18 +1,18 @@
-import { config } from 'dotenv';
-import { fileURLToPath } from 'url';
-import path from 'path';
+import { config } from "dotenv";
+import { fileURLToPath } from "url";
+import path from "path";
 
 // Get __dirname equivalent in ES module
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Load .env file from the parent project directory
-config({ path: path.resolve(__dirname, '../.env') });
+config({ path: path.resolve(__dirname, "../.env") });
 
+import { shopifyApp } from "@shopify/shopify-app-express";
+import { MySQLSessionStorage } from "@shopify/shopify-app-session-storage-mysql";
+import { LATEST_API_VERSION } from "@shopify/shopify-api";
 
-import { shopifyApp } from '@shopify/shopify-app-express';
-import { MySQLSessionStorage } from '@shopify/shopify-app-session-storage-mysql';
-import { LATEST_API_VERSION } from '@shopify/shopify-api';
 // Create MySQL session storage with connection pool limit
 const sessionStorage = new MySQLSessionStorage(
   process.env.DATABASE_URL,
@@ -22,6 +22,7 @@ const sessionStorage = new MySQLSessionStorage(
 let { restResources } = await import(
   `@shopify/shopify-api/rest/admin/${LATEST_API_VERSION}`
 );
+console.log(process.env.SHOPIFY_HOST_NAME);
 
 // Initialize Shopify app
 const shopify = shopifyApp({
@@ -40,11 +41,11 @@ const shopify = shopifyApp({
     scopes: process.env.SHOPIFY_SCOPES.split(","), // Converte l'array di scope dal .env in JSON
   },
   auth: {
-    path: '/api/auth',
-    callbackPath: '/api/auth/callback',
+    path: "/api/auth",
+    callbackPath: "/api/auth/callback",
   },
   webhooks: {
-    path: '/api/webhooks',
+    path: "/api/webhooks",
   },
   sessionStorage, // Use the MySQL session storage
 });

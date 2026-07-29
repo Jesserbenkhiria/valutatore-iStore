@@ -17,10 +17,18 @@ const STATIC_PATH =
     : `${process.cwd()}/frontend/`;
 
 const app = express();
-app.use(express.json());
+
+// Increase limits for multipart form data
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
+
+// Add middleware to handle large multipart requests
+app.use((req, res, next) => {
+  res.setTimeout(300000); // 5 minutes timeout
+  next();
+});
 
 //subscriber.verifyValutazioneSub()
-
 
 // Set up Shopify authentication and webhook handling
 app.get(shopify.config.auth.path, shopify.auth.begin());
