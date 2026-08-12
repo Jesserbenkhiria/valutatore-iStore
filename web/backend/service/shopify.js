@@ -2,43 +2,50 @@ import { config } from "dotenv";
 import { fileURLToPath } from "url";
 import path from "path";
 
-// Get __dirname equivalent in ES module
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load .env file from the parent project directory
 config({ path: path.resolve(__dirname, "../.env") });
 
 import { shopifyApp } from "@shopify/shopify-app-express";
 import { MySQLSessionStorage } from "@shopify/shopify-app-session-storage-mysql";
 import { LATEST_API_VERSION } from "@shopify/shopify-api";
 
-// Create MySQL session storage with connection pool limit
-const sessionStorage = new MySQLSessionStorage(
-  process.env.DATABASE_URL,
-  { connectionPoolLimit: 10 } // optional: adjust as needed
-);
+const sessionStorage = new MySQLSessionStorage(process.env.DATABASE_URL, {
+  connectionPoolLimit: 10,
+});
 
-let { restResources } = await import(
+const { restResources } = await import(
   `@shopify/shopify-api/rest/admin/${LATEST_API_VERSION}`
 );
-console.log(process.env.SHOPIFY_HOST_NAME);
 
-// Initialize Shopify app
+const hostName = (
+  process.env.HOST ||
+  process.env.SHOPIFY_HOST_NAME ||
+  ""
+).replace(/^https?:\/\//, "");
+
+const hostScheme =
+  process.env.HOST?.startsWith("http://") ||
+  process.env.SHOPIFY_HOST_SCHEME === "http"
+    ? "http"
+    : "https";
+
+const scopes = (process.env.SCOPES || process.env.SHOPIFY_SCOPES || "")
+  .split(",")
+  .map((scope) => scope.trim())
+  .filter(Boolean);
+
 const shopify = shopifyApp({
   api: {
-    apiKey: process.env.SHOPIFY_API_KEY, // Chiave API dal file .env
-    apiSecretKey: process.env.SHOPIFY_CLIENT_SECRET, // Chiave segreta API dal file .env
-    hostName: process.env.SHOPIFY_HOST_NAME, // Nome host dal file .env
+    apiKey: process.env.SHOPIFY_API_KEY,
+    apiSecretKey:
+      process.env.SHOPIFY_API_SECRET || process.env.SHOPIFY_CLIENT_SECRET,
+    hostName,
+    hostScheme,
+    scopes,
     apiVersion: LATEST_API_VERSION,
     restResources,
-    future: {
-      customerAddressDefaultFix: true,
-      lineItemBilling: true,
-      unstable_managedPricingSupport: true,
-    },
-    billing: undefined, // Configura la fatturazione se necessario
-    scopes: process.env.SHOPIFY_SCOPES.split(","), // Converte l'array di scope dal .env in JSON
   },
   auth: {
     path: "/api/auth",
@@ -47,7 +54,7 @@ const shopify = shopifyApp({
   webhooks: {
     path: "/api/webhooks",
   },
-  sessionStorage, // Use the MySQL session storage
+  sessionStorage,
 });
 
 export default shopify;

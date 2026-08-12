@@ -1,182 +1,295 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Tooltip, Card, DataTable, Spinner, Layout, Icon, Pagination } from '@shopify/polaris'; // Importa Pagination da Polaris
-import { useAuthenticatedFetch } from '../hooks';
-import { Link } from 'react-router-dom';
-import { EditMajor , BarcodeMajor } from '@shopify/polaris-icons';
-import { Toaster,toast} from 'sonner';
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import {
+  Badge,
+  Button,
+  Card,
+  EmptyState,
+  IndexTable,
+  Pagination,
+  Spinner,
+  Stack,
+  TextField,
+  TextStyle,
+  Tooltip,
+  Icon,
+} from "@shopify/polaris";
+import { EditMajor, BarcodeMajor, SearchMajor } from "@shopify/polaris-icons";
+import { useNavigate } from "react-router-dom";
+import { Toaster, toast } from "sonner";
+import { useAuthenticatedFetch } from "../hooks";
+
+const ITEMS_PER_PAGE = 10;
+
+function parseContent(row) {
+  try {
+    return JSON.parse(row.content);
+  } catch {
+    return {};
+  }
+}
+
+function StatusBadge({ active, activeLabel = "Sì", inactiveLabel = "No" }) {
+  return (
+    <Badge status={active ? "success" : "default"}>
+      {active ? activeLabel : inactiveLabel}
+    </Badge>
+  );
+}
+
+function ImeiBadge({ status }) {
+  if (status === null || status === undefined) {
+    return <Badge>Non controllato</Badge>;
+  }
+  if (status === true) {
+    return <Badge status="success">Valido</Badge>;
+  }
+  return <Badge status="critical">Non valido</Badge>;
+}
+
 export function TabellaValutazione() {
   const fetch = useAuthenticatedFetch();
+  const navigate = useNavigate();
   const [rows, setRows] = useState([]);
-  const [missing, setMissing] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1); // Stato per gestire la pagina corrente
-  const itemsPerPage = 10; // Numero di elementi per pagina
+  const [currentPage, setCurrentPage] = useState(1);
+  const [query, setQuery] = useState("");
 
   const fetchData = async () => {
     try {
-      const data = await fetch('/api/valutazione/list');
-      const jsonData = await data.json();
+      const response = await fetch("/api/valutazione/list");
+      const jsonData = await response.json();
       setRows(jsonData);
-      setIsLoading(false);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
+      toast.error("Errore nel caricamento delle valutazioni");
+    } finally {
       setIsLoading(false);
     }
   };
-  const missingData = async () => {
-    try {
-      const data = await fetch('/api/valutazione/missing');
-      const jsonData = await data.json();
-      setMissing(jsonData);
-      setIsLoading(false);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      setIsLoading(false);
-    }
-  };
-  console.log("Missing ",missing);
-  
+
   useEffect(() => {
     fetchData();
-    // missingData()
   }, []);
 
- const checkIMEI = useCallback(
-    async (imei,id) => {
-      const parsedBody = {
-        imei: imei,
-        id:id
-      };
-      const url = "/api/check-imei";
-      const method = "POST";
+  const checkIMEI = useCallback(
+    async (imei, id) => {
       try {
-        const response = await fetch(url, {
-          method,
-          body: JSON.stringify(parsedBody),
+        const response = await fetch("/api/check-imei", {
+          method: "POST",
+          body: JSON.stringify({ imei, id }),
           headers: { "Content-Type": "application/json" },
         });
         const data = await response.json();
-        console.log("Response data:", data.found);
-        updateRow(id,data.found)
-        if(data.data.id){
-          console.log("data.data",data);
-          toast.success(`IMEI ${data.data.modelName} already exists.`)
-        }else if(data.found){
-          console.log("data.data",data);
-          toast.success("IMEI checked Model "+ data.modelName +" Your Balance is "+data.balance+" € ")
-        }else{
-          toast.error("IMEI not Valid")
+
+        setRows((prevRows) =>
+          prevRows.map((row) =>
+            row.id === id ? { ...row, imeiConfermato: data.found } : row
+          )
+        );
+
+        if (data.data?.id) {
+          toast.success(`IMEI già presente: ${data.data.modelName}`);
+        } else if (data.found) {
+          toast.success(
+            `IMEI valido — ${data.modelName}. Saldo: ${data.balance} €`
+          );
+        } else {
+          toast.error("IMEI non valido");
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
+        toast.error("Errore durante la verifica IMEI");
       }
-    }, []
+    },
+    [fetch]
   );
 
-  const updateRow = (id, state) => {
-    setRows((prevRows) => {
-      const updatedRows = [...prevRows];
-      const index = updatedRows.findIndex((row) => row.id === id);
-      if (index !== -1) {
-        updatedRows[index] = {
-          ...updatedRows[index],
-          imeiConfermato: state,
-        };
-      }
-      return updatedRows;
+  const filteredRows = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+    if (!normalizedQuery) return rows;
+
+    return rows.filter((row) => {
+      const content = parseContent(row);
+      const haystack = [
+        String(row.id),
+        content.nome,
+        content.name,
+        content.email,
+        content.telefono,
+        content.phone,
+        content.modello,
+        content.prezzo,
+        content.note,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      return haystack.includes(normalizedQuery);
     });
+  }, [rows, query]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [query]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredRows.length / ITEMS_PER_PAGE));
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const pageRows = filteredRows.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const rangeStart = filteredRows.length === 0 ? 0 : startIndex + 1;
+  const rangeEnd = Math.min(startIndex + ITEMS_PER_PAGE, filteredRows.length);
+
+  const resourceName = {
+    singular: "valutazione",
+    plural: "valutazioni",
   };
-
-
 
   if (isLoading) {
     return (
       <Card sectioned>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '200px' }}>
-          <Spinner accessibilityLabel="Loading" size="large" color="teal" />
-          <p style={{ marginLeft: '20px' }}>Loading data...</p>
-        </div>
+        <Stack alignment="center" distribution="center">
+          <Spinner accessibilityLabel="Caricamento valutazioni" size="large" />
+        </Stack>
       </Card>
     );
   }
 
-  // Calcola gli indici di inizio e fine per la pagina corrente
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = currentPage * itemsPerPage;
-  const truncateText = (text, maxLength) => {
-    if (text.length > maxLength) {
-      return text.slice(0, maxLength) + '...';
-    }
-    return text;
-  };
   return (
-    <Layout title="Valutazioni Effettuate">
-      <Toaster richColors/>
-      <Layout.Section>
-        <Card sectioned fullWidth>
-          <DataTable
-            columnContentTypes={['text', 'text', 'text', 'text', 'text', 'text', 'text', 'text']}
-            headings={[
-              <strong>Id</strong>,
-              <strong>Nome</strong>,
-              <strong>Email</strong>,
-              <strong>Telefono</strong>,
-              <strong>Modello</strong>,
-              <strong>Prezzo</strong>,
-              <strong>Note</strong>,
-              <strong>Valutato</strong>,
-              <strong>Ritiro Organizzato</strong>,
-              <strong>Contattato</strong>,
-              <strong>IMEI Status</strong>,
-              <strong>Azioni</strong>,
-              ,
-
-            ]} 
-            rows={rows.slice(startIndex, endIndex).map((row) => {
-              const parsedContent = JSON.parse(row.content);
-              return [
-                row.id,
-                <Tooltip content={parsedContent.nome || parsedContent.name}>
-                  <span>{truncateText(parsedContent.nome || parsedContent.name, 20)}</span>
-                </Tooltip>,
-                parsedContent.email,
-                parsedContent.telefono || parsedContent.phone,
-                <Tooltip content={parsedContent.modello}>
-                  <span>{truncateText(parsedContent.modello, 20)}</span>
-                </Tooltip>,
-                parsedContent.prezzo,
-                parsedContent.note || "",
-                row.valutato ? 'Si' : 'No',
-                row.ritirato ? 'Si' : 'No',
-                row.confermato ? 'Si' : 'No',
-                row.imeiConfermato === null ? "Non controllato" : row.imeiConfermato === true ? "Valido" : "Non valido"  ,
-                [<Tooltip key={`tooltip-${row.id}`} content="Modifica">
-                  <Link to={`/${row.id}`}><Icon source={EditMajor} color="inkLighter" />
-                  </Link>
-                </Tooltip>
-                ],
-                [
-                <div content="check Imei" id='imeicheck' style={{cursor:"pointer"}} onClick={()=>{checkIMEI(parsedContent.imei,row.id)}}>
-                <Icon
-                  source={BarcodeMajor}
-                  tone="base"
-                />
-                </div>
-                ],
-              ];
-            })}
-          />
-          {/* Aggiungi la paginazione sopra o sotto la tabella */}
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
-            <Pagination
-              hasPrevious={currentPage > 1}
-              onPrevious={() => setCurrentPage((prev) => prev - 1)}
-              hasNext={endIndex < rows.length}
-              onNext={() => setCurrentPage((prev) => prev + 1)}
+    <Card>
+      <Toaster richColors />
+      <Card.Section>
+        <Stack distribution="equalSpacing" alignment="center">
+          <TextStyle variation="strong">Valutazioni effettuate</TextStyle>
+          <div style={{ minWidth: "280px", maxWidth: "360px", width: "100%" }}>
+            <TextField
+              label="Cerca"
+              labelHidden
+              value={query}
+              onChange={setQuery}
+              placeholder="Cerca per nome, email, modello..."
+              prefix={<Icon source={SearchMajor} color="base" />}
+              clearButton
+              onClearButtonClick={() => setQuery("")}
+              autoComplete="off"
             />
           </div>
-        </Card>
-      </Layout.Section>
-    </Layout>
+        </Stack>
+      </Card.Section>
+
+      {filteredRows.length === 0 ? (
+        <Card.Section>
+          <EmptyState
+            heading={query ? "Nessun risultato" : "Nessuna valutazione"}
+            image="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png"
+          >
+            <p>
+              {query
+                ? "Prova a modificare i termini di ricerca."
+                : "Le richieste inviate dal valutatore compariranno qui."}
+            </p>
+          </EmptyState>
+        </Card.Section>
+      ) : (
+        <IndexTable
+          resourceName={resourceName}
+          itemCount={filteredRows.length}
+          selectable={false}
+          headings={[
+            { title: "ID" },
+            { title: "Cliente" },
+            { title: "Contatti" },
+            { title: "Modello" },
+            { title: "Prezzo" },
+            { title: "Valutato" },
+            { title: "Ritiro" },
+            { title: "Contattato" },
+            { title: "IMEI" },
+            { title: "Azioni" },
+          ]}
+        >
+          {pageRows.map((row, index) => {
+            const content = parseContent(row);
+            const name = content.nome || content.name || "—";
+            const phone = content.telefono || content.phone || "—";
+
+            return (
+              <IndexTable.Row id={String(row.id)} key={row.id} position={index}>
+                <IndexTable.Cell>
+                  <TextStyle variation="strong">#{row.id}</TextStyle>
+                </IndexTable.Cell>
+                <IndexTable.Cell>
+                  <Stack vertical spacing="extraTight">
+                    <TextStyle variation="strong">{name}</TextStyle>
+                    {content.note ? (
+                      <TextStyle variation="subdued">{content.note}</TextStyle>
+                    ) : null}
+                  </Stack>
+                </IndexTable.Cell>
+                <IndexTable.Cell>
+                  <Stack vertical spacing="extraTight">
+                    <span>{content.email || "—"}</span>
+                    <TextStyle variation="subdued">{phone}</TextStyle>
+                  </Stack>
+                </IndexTable.Cell>
+                <IndexTable.Cell>
+                  <Tooltip content={content.modello || "—"}>
+                    <span>{content.modello || "—"}</span>
+                  </Tooltip>
+                </IndexTable.Cell>
+                <IndexTable.Cell>{content.prezzo || "—"}</IndexTable.Cell>
+                <IndexTable.Cell>
+                  <StatusBadge active={row.valutato} />
+                </IndexTable.Cell>
+                <IndexTable.Cell>
+                  <StatusBadge active={row.ritirato} />
+                </IndexTable.Cell>
+                <IndexTable.Cell>
+                  <StatusBadge active={row.confermato} />
+                </IndexTable.Cell>
+                <IndexTable.Cell>
+                  <ImeiBadge status={row.imeiConfermato} />
+                </IndexTable.Cell>
+                <IndexTable.Cell>
+                  <Stack spacing="tight">
+                    <Tooltip content="Modifica valutazione">
+                      <Button
+                        plain
+                        icon={EditMajor}
+                        onClick={() => navigate(`/${row.id}`)}
+                        accessibilityLabel={`Modifica valutazione ${row.id}`}
+                      />
+                    </Tooltip>
+                    <Tooltip content="Verifica IMEI">
+                      <Button
+                        plain
+                        icon={BarcodeMajor}
+                        onClick={() => checkIMEI(content.imei, row.id)}
+                        accessibilityLabel={`Verifica IMEI ${row.id}`}
+                      />
+                    </Tooltip>
+                  </Stack>
+                </IndexTable.Cell>
+              </IndexTable.Row>
+            );
+          })}
+        </IndexTable>
+      )}
+
+      {filteredRows.length > 0 && (
+        <Card.Section>
+          <Stack distribution="equalSpacing" alignment="center">
+            <TextStyle variation="subdued">
+              {rangeStart}–{rangeEnd} di {filteredRows.length}
+            </TextStyle>
+            <Pagination
+              hasPrevious={currentPage > 1}
+              onPrevious={() => setCurrentPage((page) => page - 1)}
+              hasNext={currentPage < totalPages}
+              onNext={() => setCurrentPage((page) => page + 1)}
+            />
+          </Stack>
+        </Card.Section>
+      )}
+    </Card>
   );
 }

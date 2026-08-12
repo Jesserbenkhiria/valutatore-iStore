@@ -138,13 +138,12 @@
     </div>
 </div>
 
-<script src="{{ 'jQuery.js' | asset_url }}"></script>
+<script src="{{ 'jQuery.js' | asset_url }}" defer></script>
 <script src="{{ 'valutatoreistore.js' | asset_url }}" defer></script>
 
 {% schema %}
 {
   "name": "Valutatore iStore Milano",
-  "templates": ["page"],
   "target": "section",
   "settings": []
 }

@@ -5,7 +5,8 @@
   "scripts": {
     "debug": "node --inspect-brk index.js",
     "dev": "cross-env NODE_ENV=development nodemon ./backend/index.js --ignore ./frontend",
-    "serve": "cross-env NODE_ENV=production node ./backend/index.js"
+    "serve": "cross-env NODE_ENV=production node ./backend/index.js",
+    "postinstall": "prisma generate --schema=backend/prisma/schema.prisma"
   },
   "type": "module",
   "engines": {
@@ -13,17 +14,23 @@
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
-    "@shopify/shopify-app-express": "^1.1.0",
-    "@shopify/shopify-app-session-storage-sqlite": "^1.0.0",
+    "@shopify/shopify-app-express": "^5.0.20",
+    "@shopify/shopify-app-session-storage-mysql": "^4.0.20",
     "axios": "^1.7.7",
     "compression": "^1.7.4",
     "cross-env": "^7.0.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "multer": "^1.4.5-lts.1",
+    "node-cron": "^3.0.3",
+    "node-fetch": "^3.3.2",
+    "nodemailer": "^6.9.14",
+    "prisma": "^5.22.0",
     "serve-static": "^1.14.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.15",
     "prettier": "^2.6.2",
-    "pretty-quick": "^3.1.3",
-    "prisma": "^5.22.0"
+    "pretty-quick": "^3.1.3"
   }
 }

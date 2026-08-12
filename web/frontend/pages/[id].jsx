@@ -1,13 +1,13 @@
-import { useParams } from "react-router-dom";
-import { Page } from "@shopify/polaris";
-import { Loading, TitleBar } from "@shopify/app-bridge-react";
+import { useParams, useNavigate } from "react-router-dom";
+import { Page, Layout, Spinner, Stack } from "@shopify/polaris";
+import { TitleBar } from "@shopify/app-bridge-react";
 import { useAppQuery } from "../hooks";
 import { FormValutazione } from "../components";
 
 export default function EditValutazione() {
-  //const breadcrumbs = [{ content: "Modifica Valutazione", url: "/" }];
-
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const {
     data: valutazione,
     isLoading,
@@ -18,27 +18,33 @@ export default function EditValutazione() {
       refetchOnReconnect: false,
     },
   });
-  /* Loading action and markup that uses App Bridge and Polaris components */
+
   if (isLoading || isRefetching) {
     return (
-      <Page>
-        <TitleBar
-          title="Modifica Valutazione"
-          breadcrumbs={null}
-          primaryAction={null}
-        />
-        <Loading />
+      <Page narrowWidth>
+        <TitleBar title="Modifica valutazione">
+          <a slot="breadcrumb-actions" href="/" onClick={(e) => { e.preventDefault(); navigate("/"); }}>
+            Valutazioni
+          </a>
+        </TitleBar>
+        <Layout>
+          <Layout.Section>
+            <Stack alignment="center" distribution="center">
+              <Spinner accessibilityLabel="Caricamento valutazione" size="large" />
+            </Stack>
+          </Layout.Section>
+        </Layout>
       </Page>
     );
   }
-  // Renderizza il componente FormValutazione passando valutazione come prop
+
   return (
-    <Page>
-      <TitleBar
-        title="Modifica Valutazione"
-        breadcrumbs={null}
-        primaryAction={null}
-      />
+    <Page narrowWidth>
+      <TitleBar title={`Valutazione #${id}`}>
+        <a slot="breadcrumb-actions" href="/" onClick={(e) => { e.preventDefault(); navigate("/"); }}>
+          Valutazioni
+        </a>
+      </TitleBar>
       <FormValutazione valutazione={valutazione} />
     </Page>
   );

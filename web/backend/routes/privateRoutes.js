@@ -31,4 +31,12 @@ privateRouter.get(
   "/api/valutatore/get-stats",
   ValutazioneController.privateController.getStats
 );
+privateRouter.get(
+  "/api/valutatore/logs",
+  ValutazioneController.privateController.getLogs
+);
+privateRouter.get(
+  "/api/valutatore/daily-stats",
+  ValutazioneController.privateController.getDailyStats
+);
 export default privateRouter;

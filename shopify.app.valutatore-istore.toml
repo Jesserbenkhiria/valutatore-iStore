@@ -1,0 +1,29 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "184bdca6e37d3fb945adc746a66353c1"
+application_url = "https://valutatoreprod.ecommercia.io"
+embedded = true
+name = "valutatore-istore"
+
+[access_scopes]
+scopes = "read_customers,read_orders,write_customers,write_orders,write_products"
+
+[auth]
+redirect_urls = [
+  "https://valutatoreprod.ecommercia.io/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2025-07"
+
+[[webhooks.subscriptions]]
+compliance_topics = ["customers/data_request", "customers/redact", "shop/redact"]
+uri = "/api/webhooks"
+
+[app_proxy]
+url = "https://valutatoreprod.ecommercia.io"
+subpath = "proxy"
+prefix = "apps"
+
+[build]
+automatically_update_urls_on_dev = true

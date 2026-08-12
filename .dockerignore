@@ -1,0 +1,15 @@
+node_modules
+web/node_modules
+web/frontend/node_modules
+.git
+.shopify
+.env
+.env.*
+*.log
+dist
+web/frontend/dist
+uploads
+coverage
+.DS_Store
+README.md
+terminals

@@ -50,6 +50,40 @@ export const ValutazioneLogsRepository = {
               throw new Error('Error counting today\'s logs by step ID');
             }
           },
+        list: async function ({ page = 1, limit = 20, stepId } = {}) {
+            const safePage = Math.max(1, Number(page) || 1);
+            const safeLimit = Math.min(100, Math.max(1, Number(limit) || 20));
+            const skip = (safePage - 1) * safeLimit;
+
+            const where = {};
+            if (stepId) {
+              where.stepId = Number(stepId);
+            }
+
+            try {
+              const [logs, total] = await Promise.all([
+                prisma.valutazioneLogs.findMany({
+                  where,
+                  include: { step: true },
+                  orderBy: { id: "desc" },
+                  skip,
+                  take: safeLimit,
+                }),
+                prisma.valutazioneLogs.count({ where }),
+              ]);
+
+              return {
+                logs,
+                total,
+                page: safePage,
+                limit: safeLimit,
+                totalPages: Math.max(1, Math.ceil(total / safeLimit)),
+              };
+            } catch (error) {
+              console.error("Error in list:", error);
+              throw new Error("Error retrieving valutazione logs");
+            }
+          },
         steps : {
             LISTA_LETTA: { id: 1, descrizione: 'Lista letta' },
             DETTAGLIO_VISTO: { id: 2, descrizione: 'Dettaglio Visto' },

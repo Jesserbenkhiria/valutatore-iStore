@@ -1,0 +1,24 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SHOPIFY_API_KEY: ${SHOPIFY_API_KEY}
+    container_name: valutatore-istore
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8081}:8081"
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PORT: 8081
+      UPLOAD_DIR: /app/uploads
+    volumes:
+      - valutatore-uploads:/app/uploads
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  valutatore-uploads:

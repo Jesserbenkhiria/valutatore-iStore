@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import {
-  Page,
   Layout,
   Card,
   FormLayout,
@@ -8,7 +7,6 @@ import {
   Button,
   Select,
   Stack,
-  Frame,
   Toast,
   Banner,
   Spinner,
@@ -194,10 +192,9 @@ export function FormValutazione({ valutazione }) {
     }
   }, []);
   return (
-    <Frame>
+    <>
       {toastMarkup}
-      <Page title="Modifica Valutazione">
-        <Layout>
+      <Layout>
           <Layout.Section>
             <Card sectioned>
               {valutatoAlert && <Banner title="Valutato" status="info" />}
@@ -354,7 +351,6 @@ export function FormValutazione({ valutazione }) {
             </Card>
           </Layout.Section>
         </Layout>
-      </Page>
-    </Frame>
+    </>
   );
 }

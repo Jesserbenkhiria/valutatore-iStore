@@ -4,6 +4,7 @@ import { ValutazioneRepository } from "../repository/valutazione.js";
 import { orderCreator } from "../service/orderService.js";
 import { subscriber } from "../service/klaviyo-subscribe.js";
 import { ValutazioneLogsRepository } from "../repository/valutazioneLogs.js";
+import { ValutazioneDailyStatsRepository } from "../repository/valutazioneDailyStats.js";
 import axios from "axios";
 import { imeiResults } from "../repository/imeiResults.js";
 import valutaEmail from "../service/emailSender.js";
@@ -138,6 +139,45 @@ const ValutazioneController = {
       }
 
       res.status(status).send({ stats, error });
+    },
+
+    getLogs: async (req, res) => {
+      let status = 200;
+      let error = null;
+      let result = null;
+
+      try {
+        result = await ValutazioneLogsRepository.list({
+          page: req.query.page,
+          limit: req.query.limit,
+          stepId: req.query.stepId,
+        });
+      } catch (e) {
+        console.error(`Failed to fetch logs: ${e.message}`);
+        status = 500;
+        error = e.message;
+      }
+
+      res.status(status).send({ ...result, error });
+    },
+
+    getDailyStats: async (req, res) => {
+      let status = 200;
+      let error = null;
+      let result = null;
+
+      try {
+        result = await ValutazioneDailyStatsRepository.list({
+          page: req.query.page,
+          limit: req.query.limit,
+        });
+      } catch (e) {
+        console.error(`Failed to fetch daily stats: ${e.message}`);
+        status = 500;
+        error = e.message;
+      }
+
+      res.status(status).send({ ...result, error });
     },
 
     valutaValutazione: async function (req, res) {

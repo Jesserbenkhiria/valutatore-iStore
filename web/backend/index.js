@@ -8,8 +8,20 @@ import GDPRWebhookHandlers from "./service/webHook.js";
 import publicRouter from "./routes/publicRoutes.js";
 import privateRouter from "./routes/privateRoutes.js";
 import { subscriber } from "./service/klaviyo-subscribe.js";
+import { initDailyStats } from "./service/dailyStatsScheduler.js";
 
-const PORT = 4000;;
+const PORT = parseInt(
+  process.env.BACKEND_PORT ||
+    process.env.PORT ||
+    (process.env.NODE_ENV === "production" ? "8081" : ""),
+  10
+);
+
+if (!PORT) {
+  throw new Error(
+    "BACKEND_PORT is not set. Run the app with `shopify app dev` or set BACKEND_PORT/PORT."
+  );
+}
 
 const STATIC_PATH =
   process.env.NODE_ENV === "production"
@@ -55,4 +67,6 @@ app.use("/*", shopify.ensureInstalledOnShop(), async (_req, res, _next) => {
     .send(readFileSync(join(STATIC_PATH, "index.html")));
 });
 
-app.listen(PORT);
+app.listen(PORT, () => {
+  initDailyStats();
+});
